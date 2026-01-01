@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sectograph Final</title>
+    <title>Sectograph Fixed</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* --- 🛠️ แก้จอล้น: ตั้งค่าพื้นฐานใหม่หมด --- */
+        * {
+            box-sizing: border-box; /* สำคัญมาก! รวมขอบเข้ากับความกว้าง */
+            -webkit-tap-highlight-color: transparent;
+        }
+
         :root {
             --primary: #4e54c8;
             --secondary: #8f94fb;
@@ -27,7 +33,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
+            overflow: hidden; /* ห้าม Scroll ที่ Body */
         }
 
         .app-container {
@@ -43,7 +49,7 @@
             transition: 0.3s;
         }
 
-        /* --- Sidebar (รายการ) --- */
+        /* --- Sidebar --- */
         .sidebar {
             width: 400px;
             background: #fafbff;
@@ -51,7 +57,7 @@
             padding: 25px;
             display: flex;
             flex-direction: column;
-            z-index: 20; /* อยู่เหนือนาฬิกา */
+            z-index: 20;
             transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
@@ -92,6 +98,8 @@
         .task-item, .todo-item {
             background: white; padding: 12px 15px; border-radius: 12px; margin-bottom: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.03); transition: 0.2s; position: relative;
+            /* ป้องกันข้อความล้นกล่อง */
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         .task-item { border-left: 5px solid #ddd; }
         .task-item.active-now {
@@ -100,11 +108,12 @@
         }
         .todo-item { border-left: 5px solid var(--task-color); display: flex; align-items: center; gap: 12px; }
         .task-time { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; display: flex; align-items: center; gap: 5px;}
-        .task-title { font-size: 1rem; margin-top: 3px; font-weight: 500; color: var(--text-main); }
+        .task-title { font-size: 1rem; margin-top: 3px; font-weight: 500; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; }
+        
         .todo-check { width: 20px; height: 20px; border: 2px solid #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; cursor: pointer; flex-shrink: 0; }
         .todo-check:hover { border-color: var(--task-color); }
-        .todo-content { flex-grow: 1; }
-        .todo-title { font-size: 0.95rem; font-weight: 500; }
+        .todo-content { flex-grow: 1; overflow: hidden; }
+        .todo-title { font-size: 0.95rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; }
         .todo-due { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; margin-top: 2px; }
 
         /* --- Main Clock --- */
@@ -150,23 +159,39 @@
 
         /* --- 📱 Mobile Optimization --- */
         @media (max-width: 768px) {
-            /* ใช้ column-reverse เพื่อให้ MainContent (นาฬิกา) อยู่บน Sidebar อยู่ล่าง */
-            .app-container { flex-direction: column-reverse; height: 100vh; width: 100%; border-radius: 0; overflow: hidden; }
+            .app-container { 
+                flex-direction: column-reverse; /* นาฬิกาบน รายการล่าง */
+                height: 100vh; 
+                width: 100%; 
+                border-radius: 0; 
+                overflow: hidden;
+            }
             .mobile-handle { display: block; }
             
-            /* นาฬิกาอยู่ด้านบน กินพื้นที่ 45% */
-            .main-content { height: 45%; width: 100%; padding-top: 20px; box-sizing: border-box; }
+            /* นาฬิกา */
+            .main-content { 
+                height: 45%; 
+                width: 100%; 
+                padding-top: 20px; 
+                box-sizing: border-box; /* ป้องกันล้น */
+            }
             .clock-wrapper { width: 280px; height: 280px; }
             .time-big { font-size: 2.5rem; }
 
-            /* รายการอยู่ด้านล่าง ทำเป็น Sheet โค้งมน */
+            /* รายการ (Sheet) */
             .sidebar { 
-                width: 100%; height: 55%; border-right: none; border-top: 1px solid #eee;
-                border-radius: 25px 25px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
-                position: relative; padding-top: 15px;
+                width: 100%; 
+                height: 55%; 
+                border-right: none; 
+                border-top: 1px solid #eee;
+                border-radius: 25px 25px 0 0; 
+                box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+                position: relative; 
+                padding: 15px 20px; /* ลด Padding ด้านข้างนิดนึง */
+                box-sizing: border-box; /* ป้องกันล้น */
             }
 
-            /* เมื่อเลื่อนรายการขึ้น (Shrink Mode) */
+            /* Shrink Effect */
             body.clock-shrunk .main-content { height: 30%; } 
             body.clock-shrunk .clock-wrapper { transform: scale(0.65); margin-top: -20px; }
             body.clock-shrunk .center-info { opacity: 0; }
@@ -180,7 +205,7 @@
         <div class="sidebar" id="sidebar">
             <div class="mobile-handle"></div>
             <div class="header">
-                <h1><i class="fas fa-clock"></i> Planner Pro</h1>
+                <h1><i class="fas fa-clock"></i> My Planner </h1>
                 <p id="user-status">กำลังโหลดระบบ...</p>
             </div>
             <button id="authBtn" class="btn-login" onclick="handleAuth()">
@@ -279,7 +304,7 @@
         }
 
         function checkAutoLogin() {
-            const savedToken = localStorage.getItem('g_token_pro_final_v2');
+            const savedToken = localStorage.getItem('g_token_pro_final_v3');
             if (savedToken && gapiInited && gisInited) {
                 try {
                     gapi.client.setToken(JSON.parse(savedToken));
@@ -292,7 +317,7 @@
         function handleAuth() {
             tokenClient.callback = async (resp) => {
                 if (resp.error) throw resp;
-                localStorage.setItem('g_token_pro_final_v2', JSON.stringify(gapi.client.getToken()));
+                localStorage.setItem('g_token_pro_final_v3', JSON.stringify(gapi.client.getToken()));
                 toggleState(true);
                 await fetchAllData();
             };
@@ -305,7 +330,7 @@
             if (token !== null) {
                 google.accounts.oauth2.revoke(token.access_token);
                 gapi.client.setToken('');
-                localStorage.removeItem('g_token_pro_final_v2');
+                localStorage.removeItem('g_token_pro_final_v3');
             }
             toggleState(false);
             myEvents = []; myTasks = [];
@@ -402,7 +427,7 @@
         }
 
         // ==========================================
-        // 🕒 วาดนาฬิกา (Radial Text Alignment)
+        // 🕒 วาดนาฬิกา (Radial Text + Fixes)
         // ==========================================
         const ctx = document.getElementById('clock').getContext('2d');
         const cx = 500, cy = 500, r = 450;
@@ -415,9 +440,11 @@
 
             ctx.clearRect(0, 0, 1000, 1000);
             
+            // พื้นหลัง
             ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2*Math.PI); ctx.fillStyle='white'; ctx.fill();
             ctx.strokeStyle='#eee'; ctx.lineWidth=3; ctx.stroke();
 
+            // Events
             myEvents.forEach((ev, idx) => {
                 if(!ev.start.dateTime) return;
                 const start = new Date(ev.start.dateTime);
@@ -451,10 +478,7 @@
                     
                     // หมุนให้ขนานกับรัศมี (Radial)
                     let rotateAng = midAng;
-                    // ถ้าอยู่ฝั่งซ้าย (9 ถึง 3 นาฬิกา) ให้กลับหัวเพื่อให้อ่านจากซ้ายไปขวา
-                    if (Math.cos(midAng) < 0) {
-                        rotateAng += Math.PI;
-                    }
+                    if (Math.cos(midAng) < 0) rotateAng += Math.PI; // กลับหัวให้อ่านง่ายฝั่งซ้าย
                     
                     ctx.rotate(rotateAng);
                     ctx.textAlign = "center";
