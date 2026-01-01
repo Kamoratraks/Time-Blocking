@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sectograph Ultimate</title>
+    <title>Sectograph Final</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -43,7 +43,7 @@
             transition: 0.3s;
         }
 
-        /* --- Sidebar (ส่วนรายการ) --- */
+        /* --- Sidebar (รายการ) --- */
         .sidebar {
             width: 400px;
             background: #fafbff;
@@ -51,11 +51,10 @@
             padding: 25px;
             display: flex;
             flex-direction: column;
-            z-index: 10;
+            z-index: 20; /* อยู่เหนือนาฬิกา */
             transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        /* ตัวจับ (Handle) สำหรับมือถือ */
         .mobile-handle {
             display: none;
             width: 50px; height: 6px;
@@ -92,21 +91,13 @@
         /* Items */
         .task-item, .todo-item {
             background: white; padding: 12px 15px; border-radius: 12px; margin-bottom: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03); transition: 0.2s; position: relative; overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03); transition: 0.2s; position: relative;
         }
         .task-item { border-left: 5px solid #ddd; }
-        /* Active Glow Animation for List Item */
         .task-item.active-now {
-            background: #f0f7ff;
-            border-left-width: 8px;
+            background: #f0f7ff; border-left-width: 8px;
             box-shadow: 0 4px 12px rgba(78, 84, 200, 0.15);
         }
-        .task-item.active-now::after {
-            content: 'กำลังทำอยู่'; position: absolute; top: 12px; right: 15px;
-            font-size: 0.7rem; color: var(--primary); font-weight: bold;
-            background: rgba(78, 84, 200, 0.1); padding: 2px 8px; border-radius: 10px;
-        }
-
         .todo-item { border-left: 5px solid var(--task-color); display: flex; align-items: center; gap: 12px; }
         .task-time { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; display: flex; align-items: center; gap: 5px;}
         .task-title { font-size: 1rem; margin-top: 3px; font-weight: 500; color: var(--text-main); }
@@ -126,6 +117,7 @@
             position: relative;
             background: radial-gradient(circle at center, #ffffff 0%, #f8f9fa 100%);
             transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            z-index: 10;
         }
         .clock-wrapper { position: relative; width: 500px; height: 500px; transition: 0.4s; }
         canvas { width: 100%; height: 100%; }
@@ -158,20 +150,23 @@
 
         /* --- 📱 Mobile Optimization --- */
         @media (max-width: 768px) {
-            .app-container { flex-direction: column; height: 100vh; width: 100%; border-radius: 0; overflow: hidden; }
+            /* ใช้ column-reverse เพื่อให้ MainContent (นาฬิกา) อยู่บน Sidebar อยู่ล่าง */
+            .app-container { flex-direction: column-reverse; height: 100vh; width: 100%; border-radius: 0; overflow: hidden; }
             .mobile-handle { display: block; }
             
+            /* นาฬิกาอยู่ด้านบน กินพื้นที่ 45% */
             .main-content { height: 45%; width: 100%; padding-top: 20px; box-sizing: border-box; }
             .clock-wrapper { width: 280px; height: 280px; }
             .time-big { font-size: 2.5rem; }
 
+            /* รายการอยู่ด้านล่าง ทำเป็น Sheet โค้งมน */
             .sidebar { 
                 width: 100%; height: 55%; border-right: none; border-top: 1px solid #eee;
                 border-radius: 25px 25px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
                 position: relative; padding-top: 15px;
             }
 
-            /* เมื่อเลื่อนดูรายการ */
+            /* เมื่อเลื่อนรายการขึ้น (Shrink Mode) */
             body.clock-shrunk .main-content { height: 30%; } 
             body.clock-shrunk .clock-wrapper { transform: scale(0.65); margin-top: -20px; }
             body.clock-shrunk .center-info { opacity: 0; }
@@ -183,7 +178,8 @@
 
     <div class="app-container">
         <div class="sidebar" id="sidebar">
-            <div class="mobile-handle"></div> <div class="header">
+            <div class="mobile-handle"></div>
+            <div class="header">
                 <h1><i class="fas fa-clock"></i> Planner Pro</h1>
                 <p id="user-status">กำลังโหลดระบบ...</p>
             </div>
@@ -202,7 +198,8 @@
                 <div class="list-section" id="taskListSection">
                     <div id="taskList"><div style="text-align:center; color:#ccc; margin-top:40px;">ไม่มี Tasks</div></div>
                 </div>
-                <div style="height: 100px;"></div> </div>
+                <div style="height: 100px;"></div>
+            </div>
 
             <button id="logoutBtn" class="btn-login btn-logout" onclick="handleSignout()" style="display:none;">
                 ออกจากระบบ
@@ -252,26 +249,19 @@
         let tokenClient, gapiInited = false, gisInited = false;
         let myEvents = [], myTasks = [];
 
-        // --- Helper: ตรวจสอบสีพื้นหลังเพื่อเลือกสีตัวอักษร (ขาว/ดำ) ---
         function getContrastColor(hexColor) {
-            // แปลง Hex เป็น RGB
             const r = parseInt(hexColor.substr(1, 2), 16);
             const g = parseInt(hexColor.substr(3, 2), 16);
             const b = parseInt(hexColor.substr(5, 2), 16);
-            // คำนวณความสว่าง (Luminance)
             const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-            return (yiq >= 128) ? '#333333' : '#ffffff'; // ถ้าสว่างให้ใช้ดำ ถ้ามืดให้ใช้ขาว
+            return (yiq >= 128) ? '#333333' : '#ffffff';
         }
 
-        // --- Mobile Scroll Logic ---
         const contentArea = document.getElementById('contentArea');
         contentArea.addEventListener('scroll', () => {
             if (window.innerWidth <= 768) {
-                if (contentArea.scrollTop > 20) {
-                    document.body.classList.add('clock-shrunk');
-                } else {
-                    document.body.classList.remove('clock-shrunk');
-                }
+                if (contentArea.scrollTop > 20) document.body.classList.add('clock-shrunk');
+                else document.body.classList.remove('clock-shrunk');
             }
         });
 
@@ -289,7 +279,7 @@
         }
 
         function checkAutoLogin() {
-            const savedToken = localStorage.getItem('g_token_pro_ult');
+            const savedToken = localStorage.getItem('g_token_pro_final_v2');
             if (savedToken && gapiInited && gisInited) {
                 try {
                     gapi.client.setToken(JSON.parse(savedToken));
@@ -302,7 +292,7 @@
         function handleAuth() {
             tokenClient.callback = async (resp) => {
                 if (resp.error) throw resp;
-                localStorage.setItem('g_token_pro_ult', JSON.stringify(gapi.client.getToken()));
+                localStorage.setItem('g_token_pro_final_v2', JSON.stringify(gapi.client.getToken()));
                 toggleState(true);
                 await fetchAllData();
             };
@@ -315,7 +305,7 @@
             if (token !== null) {
                 google.accounts.oauth2.revoke(token.access_token);
                 gapi.client.setToken('');
-                localStorage.removeItem('g_token_pro_ult');
+                localStorage.removeItem('g_token_pro_final_v2');
             }
             toggleState(false);
             myEvents = []; myTasks = [];
@@ -393,19 +383,11 @@
                 if(!ev.start.dateTime) return;
                 const start = new Date(ev.start.dateTime);
                 const end = new Date(ev.end.dateTime);
-                
-                // เช็คว่ากำลังทำอยู่ไหม?
                 const isActive = now >= start && now <= end;
                 const activeClass = isActive ? 'active-now' : '';
-
                 const timeStr = `${start.toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'})} - ${end.toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'})}`;
                 const color = ev.colorId ? '#4e54c8' : `hsl(${idx*60}, 60%, 60%)`;
-                
-                list.innerHTML += `
-                    <div class="task-item ${activeClass}" style="border-left-color:${color}">
-                        <div class="task-title">${ev.summary}</div>
-                        <div class="task-time" style="color:${color}"><i class="far fa-clock"></i> ${timeStr}</div>
-                    </div>`;
+                list.innerHTML += `<div class="task-item ${activeClass}" style="border-left-color:${color}"><div class="task-title">${ev.summary}</div><div class="task-time" style="color:${color}"><i class="far fa-clock"></i> ${timeStr}</div></div>`;
             });
         }
 
@@ -420,7 +402,7 @@
         }
 
         // ==========================================
-        // 🕒 วาดนาฬิกา
+        // 🕒 วาดนาฬิกา (Radial Text Alignment)
         // ==========================================
         const ctx = document.getElementById('clock').getContext('2d');
         const cx = 500, cy = 500, r = 450;
@@ -440,10 +422,7 @@
                 if(!ev.start.dateTime) return;
                 const start = new Date(ev.start.dateTime);
                 const end = new Date(ev.end.dateTime);
-                
-                // สีกิจกรรม
                 const color = ev.colorId ? '#4e54c8' : `hsl(${idx*60}, 60%, 60%)`;
-                // หาค่า Contrast เพื่อเลือกสีตัวอักษร
                 const textColor = getContrastColor(color);
 
                 const startMin = (start.getHours() % 12) * 60 + start.getMinutes();
@@ -452,18 +431,14 @@
                 let eAng = (endMin / 720) * 2 * Math.PI + angleOffset;
                 if (eAng < sAng) eAng += 2 * Math.PI;
 
-                // เช็คว่ากำลังทำอยู่ไหม? (Active Pulse)
                 const isActive = now >= start && now <= end;
-                if (isActive) {
-                    ctx.shadowColor = color; ctx.shadowBlur = 20; // เรืองแสง
-                } else {
-                    ctx.shadowBlur = 0;
-                }
+                if (isActive) { ctx.shadowColor = color; ctx.shadowBlur = 20; } else { ctx.shadowBlur = 0; }
 
                 ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, sAng, eAng);
                 ctx.fillStyle=color; ctx.globalAlpha=0.6; ctx.fill(); ctx.globalAlpha=1.0;
-                ctx.shadowBlur = 0; // Reset shadow
+                ctx.shadowBlur = 0;
 
+                // 🌟 วาดข้อความ (Radial Alignment) 🌟
                 const durationMins = (end.getTime() - start.getTime()) / 60000;
                 if (durationMins >= 60) {
                     const midAng = (sAng + eAng) / 2;
@@ -473,25 +448,28 @@
 
                     ctx.save();
                     ctx.translate(textX, textY);
-                    let rotateAng = midAng + Math.PI/2; 
-                    if (midAng > Math.PI/2 && midAng < 3*Math.PI/2) rotateAng += Math.PI;
+                    
+                    // หมุนให้ขนานกับรัศมี (Radial)
+                    let rotateAng = midAng;
+                    // ถ้าอยู่ฝั่งซ้าย (9 ถึง 3 นาฬิกา) ให้กลับหัวเพื่อให้อ่านจากซ้ายไปขวา
+                    if (Math.cos(midAng) < 0) {
+                        rotateAng += Math.PI;
+                    }
+                    
                     ctx.rotate(rotateAng);
-
                     ctx.textAlign = "center";
-                    ctx.fillStyle = textColor; // 🟢 ใช้สีที่คำนวณมา (ขาว/ดำ)
+                    ctx.textBaseline = "middle";
+                    ctx.fillStyle = textColor;
                     ctx.font = "bold 24px Prompt";
                     
-                    // เพิ่มขอบตัวหนังสือบางๆ เพื่อให้อ่านง่ายขึ้นไปอีก
-                    ctx.strokeStyle = (textColor === '#ffffff') ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.4)';
-                    ctx.lineWidth = 3;
-                    ctx.strokeText(ev.summary.length > 15 ? ev.summary.substring(0, 12)+"..." : ev.summary, 0, 0);
-                    ctx.fillText(ev.summary.length > 15 ? ev.summary.substring(0, 12)+"..." : ev.summary, 0, 0);
-
+                    let text = ev.summary;
+                    if(text.length > 15) text = text.substring(0, 12) + "...";
+                    ctx.fillText(text, 0, 0);
                     ctx.restore();
                 }
             });
 
-            // เส้นและตัวเลข
+            // เส้นและตัวเลข (ตั้งตรง)
             ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.font = "bold 45px Prompt"; ctx.fillStyle = "#aaa";
             for(let i=1; i<=12; i++){
                 const angle = (i/12) * 2 * Math.PI + angleOffset;
