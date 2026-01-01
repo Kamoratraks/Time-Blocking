@@ -2,8 +2,8 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sectograph & Tasks Pro 12H</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sectograph Ultimate</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -40,9 +40,10 @@
             display: flex;
             overflow: hidden;
             position: relative;
+            transition: 0.3s;
         }
 
-        /* --- Sidebar --- */
+        /* --- Sidebar (ส่วนรายการ) --- */
         .sidebar {
             width: 400px;
             background: #fafbff;
@@ -50,42 +51,30 @@
             padding: 25px;
             display: flex;
             flex-direction: column;
+            z-index: 10; /* ให้ลอยเหนือนาฬิกาในมือถือ */
+            transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        .header { margin-bottom: 20px; }
+        .header { margin-bottom: 20px; flex-shrink: 0; }
         .header h1 { margin: 0; font-size: 1.5rem; color: var(--primary); display: flex; align-items: center; gap: 10px; }
         .header p { margin: 5px 0 0; color: var(--text-muted); font-size: 0.9rem; }
 
         .tabs {
-            display: flex;
-            background: #eef2f7;
-            padding: 5px;
-            border-radius: 12px;
-            margin-bottom: 15px;
+            display: flex; background: #eef2f7; padding: 5px; border-radius: 12px; margin-bottom: 15px; flex-shrink: 0;
         }
         .tab-btn {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            background: transparent;
-            color: var(--text-muted);
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: 'Prompt';
-            font-weight: 500;
-            transition: 0.3s;
+            flex: 1; padding: 10px; border: none; background: transparent; color: var(--text-muted);
+            border-radius: 8px; cursor: pointer; font-family: 'Prompt'; font-weight: 500; transition: 0.3s;
         }
-        .tab-btn.active {
-            background: white;
-            color: var(--primary);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            font-weight: 600;
-        }
+        .tab-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); font-weight: 600; }
 
         .content-area {
             flex-grow: 1;
             overflow-y: auto;
             padding-right: 5px;
+            /* Scroll smooth */
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
         }
 
         .list-section { display: none; animation: fadeIn 0.3s ease; }
@@ -94,24 +83,14 @@
 
         /* Items */
         .task-item, .todo-item {
-            background: white;
-            padding: 12px 15px;
-            border-radius: 12px;
-            margin-bottom: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-            transition: 0.2s;
+            background: white; padding: 12px 15px; border-radius: 12px; margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03); transition: 0.2s;
         }
         .task-item { border-left: 5px solid #ddd; }
         .todo-item { border-left: 5px solid var(--task-color); display: flex; align-items: center; gap: 12px; }
-        
         .task-time { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; display: flex; align-items: center; gap: 5px;}
         .task-title { font-size: 1rem; margin-top: 3px; font-weight: 500; color: var(--text-main); }
-        
-        .todo-check {
-            width: 20px; height: 20px; border: 2px solid #ddd; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 10px; cursor: pointer; flex-shrink: 0;
-        }
+        .todo-check { width: 20px; height: 20px; border: 2px solid #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; cursor: pointer; flex-shrink: 0; }
         .todo-check:hover { border-color: var(--task-color); }
         .todo-content { flex-grow: 1; }
         .todo-title { font-size: 0.95rem; font-weight: 500; }
@@ -126,31 +105,33 @@
             justify-content: center;
             position: relative;
             background: radial-gradient(circle at center, #ffffff 0%, #f8f9fa 100%);
+            transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
-        .clock-wrapper { position: relative; width: 500px; height: 500px; }
-        canvas { width: 100%; height: 100%; transform: rotate(-90deg); }
+        .clock-wrapper { 
+            position: relative; 
+            width: 500px; height: 500px; 
+            transition: 0.3s;
+        }
+        canvas { width: 100%; height: 100%; }
+        
         .center-info {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            text-align: center; pointer-events: none;
+            text-align: center; pointer-events: none; transition: 0.3s;
         }
         .time-big { font-size: 3.5rem; font-weight: 600; color: var(--primary); margin: 0; line-height: 1;}
         .date-small { font-size: 1rem; color: #999; margin-top: 5px; }
 
         /* Buttons & Modal */
         .btn-login {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            color: white; border: none; padding: 12px; border-radius: 12px;
-            cursor: pointer; font-family: inherit; font-weight: 600;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            width: 100%; margin-bottom: 20px; transition: 0.3s;
+            background: linear-gradient(45deg, var(--primary), var(--secondary)); color: white; border: none;
+            padding: 12px; border-radius: 12px; cursor: pointer; font-family: inherit; font-weight: 600;
+            display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; margin-bottom: 20px; transition: 0.3s;
         }
         .btn-logout { background: #ff6b6b; margin-top: 10px; }
         .fab {
-            position: absolute; bottom: 30px; right: 30px;
-            width: 60px; height: 60px; background: var(--primary); color: white;
-            border-radius: 50%; border: none; font-size: 24px; cursor: pointer;
-            box-shadow: 0 10px 20px rgba(78, 84, 200, 0.4); display: none; z-index: 100;
-            transition: 0.3s;
+            position: absolute; bottom: 30px; right: 30px; width: 60px; height: 60px;
+            background: var(--primary); color: white; border-radius: 50%; border: none; font-size: 24px;
+            cursor: pointer; box-shadow: 0 10px 20px rgba(78, 84, 200, 0.4); display: none; z-index: 100; transition: 0.3s;
         }
         .fab:hover { transform: scale(1.1) rotate(90deg); }
 
@@ -160,26 +141,65 @@
         .btn-save { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-size: 1rem;}
         .close-modal { float: right; cursor: pointer; color: #999; font-size: 1.2rem;}
 
+        /* --- 📱 Mobile Optimization (จุดสำคัญ) --- */
         @media (max-width: 768px) {
-            .app-container { flex-direction: column-reverse; height: 100vh; border-radius: 0; width: 100%; }
-            .sidebar { width: 100%; height: 50%; padding: 20px; box-sizing: border-box; border-right: none; border-top: 1px solid #eee; }
-            .main-content { height: 50%; }
+            .app-container { 
+                flex-direction: column; /* เรียงบนลงล่าง */
+                height: 100vh; 
+                width: 100%; 
+                border-radius: 0; 
+                overflow: hidden;
+            }
+            
+            /* นาฬิกาอยู่ด้านบน */
+            .main-content { 
+                height: 45%; /* เริ่มต้นกินที่ 45% */
+                width: 100%;
+                padding-top: 20px;
+                box-sizing: border-box;
+            }
+            
             .clock-wrapper { width: 280px; height: 280px; }
             .time-big { font-size: 2.5rem; }
+
+            /* รายการอยู่ด้านล่าง ทำเป็น Sheet ซ้อนทับ */
+            .sidebar { 
+                width: 100%; 
+                height: 55%; /* เริ่มต้นกินที่ 55% */
+                border-right: none; 
+                border-top: 1px solid #eee;
+                border-radius: 25px 25px 0 0; /* โค้งมนด้านบน */
+                box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+                position: relative;
+                padding-top: 15px;
+            }
+
+            /* ขีดเล็กๆ บอกว่าเลื่อนได้ */
+            .sidebar::before {
+                content: '';
+                display: block; width: 40px; height: 5px; background: #eee;
+                border-radius: 10px; margin: 0 auto 15px auto;
+            }
+
+            /* เมื่อคลาส .shrunk ทำงาน (ตอนเลื่อนรายการ) */
+            body.clock-shrunk .main-content { height: 25%; } /* นาฬิกาหดเหลือ 25% */
+            body.clock-shrunk .clock-wrapper { transform: scale(0.6); margin-top: -30px; } /* ย่อนาฬิกา */
+            body.clock-shrunk .center-info { opacity: 0; } /* ซ่อนเวลาตัวใหญ่กันรก */
+            body.clock-shrunk .sidebar { height: 75%; } /* รายการขยายขึ้นมา */
         }
     </style>
 </head>
 <body>
 
     <div class="app-container">
-        <div class="sidebar">
+        <div class="sidebar" id="sidebar">
             <div class="header">
                 <h1><i class="fas fa-clock"></i> Planner Pro</h1>
                 <p id="user-status">กำลังโหลดระบบ...</p>
             </div>
 
             <button id="authBtn" class="btn-login" onclick="handleAuth()">
-                <i class="fab fa-google"></i> เข้าสู่ระบบด้วย Google
+                <i class="fab fa-google"></i> เข้าสู่ระบบ
             </button>
 
             <div class="tabs" id="tabContainer" style="display:none;">
@@ -187,17 +207,18 @@
                 <button class="tab-btn" onclick="switchTab('tasks')">Tasks</button>
             </div>
 
-            <div class="content-area">
+            <div class="content-area" id="contentArea">
                 <div class="list-section active" id="eventListSection">
                     <div id="eventList"><div style="text-align:center; color:#ccc; margin-top:40px;">ไม่มีข้อมูล</div></div>
                 </div>
                 <div class="list-section" id="taskListSection">
                     <div id="taskList"><div style="text-align:center; color:#ccc; margin-top:40px;">ไม่มี Tasks</div></div>
                 </div>
+                <div style="height: 100px;"></div>
             </div>
 
             <button id="logoutBtn" class="btn-login btn-logout" onclick="handleSignout()" style="display:none;">
-                <i class="fas fa-sign-out-alt"></i> ออกจากระบบ
+                ออกจากระบบ
             </button>
         </div>
 
@@ -217,12 +238,9 @@
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal()">&times;</span>
             <h2 style="margin-top:0;">เพิ่มกิจกรรม</h2>
-            <label>ชื่อกิจกรรม:</label>
-            <input type="text" id="eventTitle" class="form-control" placeholder="เช่น ประชุม, ออกกำลังกาย">
-            <label>เวลาเริ่ม:</label> 
-            <input type="datetime-local" id="eventStart" class="form-control">
-            <label>เวลาจบ:</label> 
-            <input type="datetime-local" id="eventEnd" class="form-control">
+            <input type="text" id="eventTitle" class="form-control" placeholder="ชื่อกิจกรรม">
+            <label>เริ่ม:</label> <input type="datetime-local" id="eventStart" class="form-control">
+            <label>จบ:</label> <input type="datetime-local" id="eventEnd" class="form-control">
             <button class="btn-save" onclick="saveEvent()">บันทึก</button>
         </div>
     </div>
@@ -232,7 +250,7 @@
 
     <script>
         // ==========================================
-        // 🔐 KEY ของคุณ
+        // 🔐 ใส่ KEY เดิมของคุณ
         // ==========================================
         const CLIENT_ID = '403729551714-j8jksjp2uqoauhc7bi2ibh02bpnvtvbh.apps.googleusercontent.com'; 
         const API_KEY = 'AIzaSyC9B9m47khLErMibHa0Fjc29B2xxE8Osoo';
@@ -246,6 +264,18 @@
 
         let tokenClient, gapiInited = false, gisInited = false;
         let myEvents = [], myTasks = [];
+
+        // --- Mobile Scroll Logic ---
+        const contentArea = document.getElementById('contentArea');
+        contentArea.addEventListener('scroll', () => {
+            if (window.innerWidth <= 768) {
+                if (contentArea.scrollTop > 20) {
+                    document.body.classList.add('clock-shrunk');
+                } else {
+                    document.body.classList.remove('clock-shrunk');
+                }
+            }
+        });
 
         function gapiLoaded() {
             gapi.load('client', async () => {
@@ -261,20 +291,20 @@
         }
 
         function checkAutoLogin() {
-            const savedToken = localStorage.getItem('g_token_pro_v2');
+            const savedToken = localStorage.getItem('g_token_pro_final');
             if (savedToken && gapiInited && gisInited) {
                 try {
                     gapi.client.setToken(JSON.parse(savedToken));
                     toggleState(true);
                     fetchAllData();
-                } catch(e) { }
+                } catch(e) {}
             } else { toggleState(false); }
         }
 
         function handleAuth() {
             tokenClient.callback = async (resp) => {
                 if (resp.error) throw resp;
-                localStorage.setItem('g_token_pro_v2', JSON.stringify(gapi.client.getToken()));
+                localStorage.setItem('g_token_pro_final', JSON.stringify(gapi.client.getToken()));
                 toggleState(true);
                 await fetchAllData();
             };
@@ -287,7 +317,7 @@
             if (token !== null) {
                 google.accounts.oauth2.revoke(token.access_token);
                 gapi.client.setToken('');
-                localStorage.removeItem('g_token_pro_v2');
+                localStorage.removeItem('g_token_pro_final');
             }
             toggleState(false);
             myEvents = []; myTasks = [];
@@ -302,19 +332,13 @@
             const tabContainer = document.getElementById('tabContainer');
 
             if (isLoggedIn) {
-                authBtn.style.display = 'none';
-                logoutBtn.style.display = 'block';
-                addBtn.style.display = 'block';
-                tabContainer.style.display = 'flex';
-                userStatus.innerText = "ออนไลน์";
-                userStatus.style.color = "green";
+                authBtn.style.display = 'none'; logoutBtn.style.display = 'block';
+                addBtn.style.display = 'block'; tabContainer.style.display = 'flex';
+                userStatus.innerText = "ออนไลน์"; userStatus.style.color = "green";
             } else {
-                authBtn.style.display = 'flex';
-                logoutBtn.style.display = 'none';
-                addBtn.style.display = 'none';
-                tabContainer.style.display = 'none';
-                userStatus.innerText = "กรุณาเชื่อมต่อ";
-                userStatus.style.color = "#888";
+                authBtn.style.display = 'flex'; logoutBtn.style.display = 'none';
+                addBtn.style.display = 'none'; tabContainer.style.display = 'none';
+                userStatus.innerText = "กรุณาเชื่อมต่อ"; userStatus.style.color = "#888";
             }
         }
 
@@ -341,14 +365,14 @@
                 });
                 myTasks = response.result.items || [];
                 renderUI();
-            } catch (err) { console.error(err); }
+            } catch (err) { }
         }
 
         async function saveEvent() {
             const summary = document.getElementById('eventTitle').value;
             const startVal = document.getElementById('eventStart').value;
             const endVal = document.getElementById('eventEnd').value;
-            if(!summary || !startVal || !endVal) return alert("กรุณากรอกข้อมูลให้ครบ");
+            if(!summary || !startVal || !endVal) return alert("กรุณากรอกข้อมูล");
 
             const event = {
                 'summary': summary,
@@ -368,19 +392,19 @@
             list.innerHTML = '';
             if (myEvents.length === 0) { list.innerHTML = '<div style="text-align:center;color:#ccc;margin-top:20px;">วันนี้ไม่มีกิจกรรม</div>'; return; }
             myEvents.forEach((ev, idx) => {
-                const isAllDay = !ev.start.dateTime;
-                const start = isAllDay ? new Date(ev.start.date) : new Date(ev.start.dateTime);
-                const end = isAllDay ? new Date(ev.end.date) : new Date(ev.end.dateTime);
-                const timeStr = isAllDay ? "ตลอดวัน" : `${start.toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'})} - ${end.toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'})}`;
+                if(!ev.start.dateTime) return;
+                const start = new Date(ev.start.dateTime);
+                const end = new Date(ev.end.dateTime);
+                const timeStr = `${start.toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'})} - ${end.toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'})}`;
                 const color = ev.colorId ? '#4e54c8' : `hsl(${idx*60}, 60%, 60%)`;
-                list.innerHTML += `<div class="task-item" style="border-left-color:${color}"><div class="task-title" style="font-weight:600;">${ev.summary}</div><div class="task-time" style="color:${color}"><i class="far fa-clock"></i> ${timeStr}</div></div>`;
+                list.innerHTML += `<div class="task-item" style="border-left-color:${color}"><div class="task-title">${ev.summary}</div><div class="task-time" style="color:${color}"><i class="far fa-clock"></i> ${timeStr}</div></div>`;
             });
         }
 
         function renderTaskList() {
             const list = document.getElementById('taskList');
             list.innerHTML = '';
-            if (myTasks.length === 0) { list.innerHTML = '<div style="text-align:center;color:#ccc;margin-top:20px;">ไม่มี Tasks ค้าง</div>'; return; }
+            if (myTasks.length === 0) { list.innerHTML = '<div style="text-align:center;color:#ccc;margin-top:20px;">ไม่มี Tasks</div>'; return; }
             myTasks.forEach(task => {
                 let dueHtml = task.due ? `<div class="todo-due"><i class="fas fa-calendar-day"></i> ${new Date(task.due).toLocaleDateString('th-TH')}</div>` : '';
                 list.innerHTML += `<div class="todo-item"><div class="todo-check"><i class="fas fa-check"></i></div><div class="todo-content"><div class="todo-title">${task.title}</div>${dueHtml}</div></div>`;
@@ -388,10 +412,11 @@
         }
 
         // ==========================================
-        // 🕒 ส่วนวาดนาฬิกา (อัปเดตใหม่: มีตัวเลข)
+        // 🕒 วาดนาฬิกา (Text in Sector)
         // ==========================================
         const ctx = document.getElementById('clock').getContext('2d');
         const cx = 500, cy = 500, r = 450;
+        const angleOffset = -Math.PI / 2;
 
         function drawClock() {
             const now = new Date();
@@ -400,51 +425,77 @@
 
             ctx.clearRect(0, 0, 1000, 1000);
             
-            // 1. พื้นหลัง
+            // พื้นหลัง
             ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2*Math.PI); ctx.fillStyle='white'; ctx.fill();
             ctx.strokeStyle='#eee'; ctx.lineWidth=3; ctx.stroke();
 
-            // 2. วาด Events
+            // Events
             myEvents.forEach((ev, idx) => {
-                if(!ev.start.dateTime) return; // ไม่วาด All-day
+                if(!ev.start.dateTime) return;
                 const start = new Date(ev.start.dateTime);
                 const end = new Date(ev.end.dateTime);
                 const color = ev.colorId ? '#4e54c8' : `hsl(${idx*60}, 60%, 60%)`;
 
                 const startMin = (start.getHours() % 12) * 60 + start.getMinutes();
                 const endMin = (end.getHours() % 12) * 60 + end.getMinutes();
-                let sAng = (startMin / 720) * 2 * Math.PI;
-                let eAng = (endMin / 720) * 2 * Math.PI;
+                let sAng = (startMin / 720) * 2 * Math.PI + angleOffset;
+                let eAng = (endMin / 720) * 2 * Math.PI + angleOffset;
                 if (eAng < sAng) eAng += 2 * Math.PI;
 
+                // วาด Sector สี
                 ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, sAng, eAng);
                 ctx.fillStyle=color; ctx.globalAlpha=0.6; ctx.fill(); ctx.globalAlpha=1.0;
+
+                // 🌟 [ใหม่] วาดชื่อกิจกรรม ถ้าเวลานานกว่า 60 นาที 🌟
+                const durationMins = (end.getTime() - start.getTime()) / 60000;
+                if (durationMins >= 60) {
+                    const midAng = (sAng + eAng) / 2;
+                    const textDist = r * 0.65; // ระยะห่างจากจุดศูนย์กลาง
+                    const textX = cx + Math.cos(midAng) * textDist;
+                    const textY = cy + Math.sin(midAng) * textDist;
+
+                    ctx.save();
+                    ctx.translate(textX, textY);
+                    
+                    // หมุนข้อความให้อ่านง่าย
+                    let rotateAng = midAng + Math.PI/2; 
+                    if (midAng > Math.PI/2 && midAng < 3*Math.PI/2) {
+                        rotateAng += Math.PI; // กลับหัวถ้าอยู่ฝั่งซ้าย
+                    }
+                    ctx.rotate(rotateAng);
+
+                    ctx.textAlign = "center";
+                    ctx.fillStyle = "white";
+                    ctx.font = "bold 24px Prompt";
+                    ctx.shadowColor = "rgba(0,0,0,0.3)";
+                    ctx.shadowBlur = 4;
+                    
+                    // ตัดคำถ้ายาวเกิน
+                    let text = ev.summary;
+                    if(text.length > 15) text = text.substring(0, 12) + "...";
+                    ctx.fillText(text, 0, 0);
+
+                    ctx.restore();
+                }
             });
 
-            // 3. วาดเส้นขีดและตัวเลข
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.font = "bold 40px Prompt";
-            ctx.fillStyle = "#aaa";
-
+            // เส้นและตัวเลข
+            ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.font = "bold 45px Prompt"; ctx.fillStyle = "#aaa";
+            ctx.shadowColor = "transparent";
             for(let i=1; i<=12; i++){
-                const angle = (i/12) * 2 * Math.PI;
-                // ขีด
+                const angle = (i/12) * 2 * Math.PI + angleOffset;
                 ctx.beginPath(); 
                 ctx.moveTo(cx+Math.cos(angle)*(r-20), cy+Math.sin(angle)*(r-20));
                 ctx.lineTo(cx+Math.cos(angle)*r, cy+Math.sin(angle)*r);
                 ctx.strokeStyle='#ddd'; ctx.lineWidth=5; ctx.stroke();
-
-                // ตัวเลข (หมุนกลับให้ตั้งตรง)
-                const numX = cx + Math.cos(angle - Math.PI/2) * (r - 60);
-                const numY = cy + Math.sin(angle - Math.PI/2) * (r - 60);
+                const numX = cx + Math.cos(angle) * (r - 60);
+                const numY = cy + Math.sin(angle) * (r - 60);
                 ctx.fillText(i.toString(), numX, numY);
             }
 
-            // 4. เข็มปัจจุบัน
+            // เข็ม
             const curMin = (now.getHours() % 12) * 60 + now.getMinutes();
-            const curAng = (curMin / 720) * 2 * Math.PI;
-            
+            const curAng = (curMin / 720) * 2 * Math.PI + angleOffset;
             ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, curAng, curAng);
             ctx.strokeStyle='#ff4757'; ctx.lineWidth=10; ctx.stroke();
             ctx.beginPath(); ctx.arc(cx+Math.cos(curAng)*r, cy+Math.sin(curAng)*r, 18, 0, 2*Math.PI);
