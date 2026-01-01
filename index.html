@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sectograph & Tasks Pro</title>
+    <title>Sectograph & Tasks Pro 12H</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -11,7 +11,7 @@
         :root {
             --primary: #4e54c8;
             --secondary: #8f94fb;
-            --task-color: #ff6b6b; /* สีของ Tasks */
+            --task-color: #ff6b6b;
             --bg: #f4f7fc;
             --card-bg: #ffffff;
             --text-main: #333;
@@ -30,7 +30,6 @@
             overflow: hidden;
         }
 
-        /* --- Layout --- */
         .app-container {
             width: 90%;
             max-width: 1200px;
@@ -43,7 +42,7 @@
             position: relative;
         }
 
-        /* --- Sidebar (Left) --- */
+        /* --- Sidebar --- */
         .sidebar {
             width: 400px;
             background: #fafbff;
@@ -57,7 +56,6 @@
         .header h1 { margin: 0; font-size: 1.5rem; color: var(--primary); display: flex; align-items: center; gap: 10px; }
         .header p { margin: 5px 0 0; color: var(--text-muted); font-size: 0.9rem; }
 
-        /* --- Tabs --- */
         .tabs {
             display: flex;
             background: #eef2f7;
@@ -84,47 +82,31 @@
             font-weight: 600;
         }
 
-        /* --- Lists Content --- */
         .content-area {
             flex-grow: 1;
             overflow-y: auto;
             padding-right: 5px;
-            position: relative;
         }
 
-        .list-section {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
+        .list-section { display: none; animation: fadeIn 0.3s ease; }
         .list-section.active { display: block; }
-        
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- Items Styles --- */
-        /* Calendar Event */
-        .task-item {
+        /* Items */
+        .task-item, .todo-item {
             background: white;
             padding: 12px 15px;
             border-radius: 12px;
             margin-bottom: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-            border-left: 5px solid #ddd;
             transition: 0.2s;
         }
+        .task-item { border-left: 5px solid #ddd; }
+        .todo-item { border-left: 5px solid var(--task-color); display: flex; align-items: center; gap: 12px; }
+        
         .task-time { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; display: flex; align-items: center; gap: 5px;}
         .task-title { font-size: 1rem; margin-top: 3px; font-weight: 500; color: var(--text-main); }
-
-        /* Google Task */
-        .todo-item {
-            background: white;
-            padding: 12px 15px;
-            border-radius: 12px;
-            margin-bottom: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-            display: flex; align-items: center; gap: 12px;
-            border-left: 5px solid var(--task-color);
-            transition: 0.2s;
-        }
+        
         .todo-check {
             width: 20px; height: 20px; border: 2px solid #ddd; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
@@ -132,10 +114,10 @@
         }
         .todo-check:hover { border-color: var(--task-color); }
         .todo-content { flex-grow: 1; }
-        .todo-title { font-size: 0.95rem; font-weight: 500; color: #444; }
+        .todo-title { font-size: 0.95rem; font-weight: 500; }
         .todo-due { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; margin-top: 2px; }
-        
-        /* --- Main Content (Clock) --- */
+
+        /* --- Main Clock --- */
         .main-content {
             flex-grow: 1;
             display: flex;
@@ -154,7 +136,7 @@
         .time-big { font-size: 3.5rem; font-weight: 600; color: var(--primary); margin: 0; line-height: 1;}
         .date-small { font-size: 1rem; color: #999; margin-top: 5px; }
 
-        /* --- Buttons --- */
+        /* Buttons & Modal */
         .btn-login {
             background: linear-gradient(45deg, var(--primary), var(--secondary));
             color: white; border: none; padding: 12px; border-radius: 12px;
@@ -163,7 +145,6 @@
             width: 100%; margin-bottom: 20px; transition: 0.3s;
         }
         .btn-logout { background: #ff6b6b; margin-top: 10px; }
-        
         .fab {
             position: absolute; bottom: 30px; right: 30px;
             width: 60px; height: 60px; background: var(--primary); color: white;
@@ -173,15 +154,8 @@
         }
         .fab:hover { transform: scale(1.1) rotate(90deg); }
 
-        /* --- Modal --- */
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 2000;
-        }
-        .modal-content {
-            background: white; padding: 30px; border-radius: 20px; width: 350px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-        }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 2000; }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 350px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
         .form-control { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; box-sizing: border-box; font-family: 'Prompt'; }
         .btn-save { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-size: 1rem;}
         .close-modal { float: right; cursor: pointer; color: #999; font-size: 1.2rem;}
@@ -215,15 +189,10 @@
 
             <div class="content-area">
                 <div class="list-section active" id="eventListSection">
-                    <div id="eventList">
-                        <div style="text-align:center; color:#ccc; margin-top:40px;">ไม่มีข้อมูล</div>
-                    </div>
+                    <div id="eventList"><div style="text-align:center; color:#ccc; margin-top:40px;">ไม่มีข้อมูล</div></div>
                 </div>
-
                 <div class="list-section" id="taskListSection">
-                    <div id="taskList">
-                        <div style="text-align:center; color:#ccc; margin-top:40px;">ไม่มี Tasks</div>
-                    </div>
+                    <div id="taskList"><div style="text-align:center; color:#ccc; margin-top:40px;">ไม่มี Tasks</div></div>
                 </div>
             </div>
 
@@ -263,41 +232,27 @@
 
     <script>
         // ==========================================
-        // 🔐 แก้ไข KEY ของคุณตรงนี้
+        // 🔐 KEY ของคุณ
         // ==========================================
         const CLIENT_ID = '403729551714-j8jksjp2uqoauhc7bi2ibh02bpnvtvbh.apps.googleusercontent.com'; 
         const API_KEY = 'AIzaSyC9B9m47khLErMibHa0Fjc29B2xxE8Osoo';
         // ==========================================
 
-        // 🔗 โหลด Library ให้ครบทั้ง 2 ตัว (Calendar + Tasks)
         const DISCOVERY_DOCS = [
             'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest',
             'https://www.googleapis.com/discovery/v1/apis/tasks/v1/rest'
         ];
-        
-        // 🔑 ขอสิทธิ์ทั้ง 2 อย่าง
         const SCOPES = 'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/tasks'; 
 
         let tokenClient, gapiInited = false, gisInited = false;
         let myEvents = [], myTasks = [];
 
-        // 1. เริ่มโหลด GAPI
         function gapiLoaded() {
             gapi.load('client', async () => {
-                try {
-                    await gapi.client.init({
-                        apiKey: API_KEY,
-                        discoveryDocs: DISCOVERY_DOCS, // สำคัญ: ต้องส่ง Array นี้เข้าไป
-                    });
-                    gapiInited = true; checkAutoLogin();
-                } catch (err) {
-                    console.error("Init Error:", err);
-                    alert("เกิดข้อผิดพลาดในการโหลดระบบ Google: " + JSON.stringify(err));
-                }
+                await gapi.client.init({ apiKey: API_KEY, discoveryDocs: DISCOVERY_DOCS });
+                gapiInited = true; checkAutoLogin();
             });
         }
-
-        // 2. เริ่มโหลด GIS
         function gisLoaded() {
             tokenClient = google.accounts.oauth2.initTokenClient({
                 client_id: CLIENT_ID, scope: SCOPES, callback: '', 
@@ -305,25 +260,21 @@
             gisInited = true; checkAutoLogin();
         }
 
-        // 3. ตรวจสอบสถานะล็อกอิน
         function checkAutoLogin() {
-            const savedToken = localStorage.getItem('g_token_pro'); // เปลี่ยนชื่อตัวแปรกันชนกับโค้ดเก่า
+            const savedToken = localStorage.getItem('g_token_pro_v2');
             if (savedToken && gapiInited && gisInited) {
                 try {
                     gapi.client.setToken(JSON.parse(savedToken));
                     toggleState(true);
                     fetchAllData();
-                } catch(e) { console.log("Token expired"); }
-            } else {
-                toggleState(false);
-            }
+                } catch(e) { }
+            } else { toggleState(false); }
         }
 
-        // 4. ปุ่ม Login
         function handleAuth() {
             tokenClient.callback = async (resp) => {
                 if (resp.error) throw resp;
-                localStorage.setItem('g_token_pro', JSON.stringify(gapi.client.getToken()));
+                localStorage.setItem('g_token_pro_v2', JSON.stringify(gapi.client.getToken()));
                 toggleState(true);
                 await fetchAllData();
             };
@@ -331,20 +282,18 @@
             else tokenClient.requestAccessToken({prompt: ''});
         }
 
-        // 5. ปุ่ม Logout
         function handleSignout() {
             const token = gapi.client.getToken();
             if (token !== null) {
                 google.accounts.oauth2.revoke(token.access_token);
                 gapi.client.setToken('');
-                localStorage.removeItem('g_token_pro');
+                localStorage.removeItem('g_token_pro_v2');
             }
             toggleState(false);
             myEvents = []; myTasks = [];
             drawClock(); renderUI();
         }
 
-        // ปรับสถานะปุ่ม
         function toggleState(isLoggedIn) {
             const authBtn = document.getElementById('authBtn');
             const logoutBtn = document.getElementById('logoutBtn');
@@ -357,68 +306,48 @@
                 logoutBtn.style.display = 'block';
                 addBtn.style.display = 'block';
                 tabContainer.style.display = 'flex';
-                userStatus.innerText = "กำลังซิงค์ข้อมูล...";
+                userStatus.innerText = "ออนไลน์";
                 userStatus.style.color = "green";
             } else {
                 authBtn.style.display = 'flex';
                 logoutBtn.style.display = 'none';
                 addBtn.style.display = 'none';
                 tabContainer.style.display = 'none';
-                userStatus.innerText = "กรุณาเชื่อมต่อเพื่อเริ่มใช้งาน";
+                userStatus.innerText = "กรุณาเชื่อมต่อ";
                 userStatus.style.color = "#888";
             }
         }
 
-        // 6. ดึงข้อมูล (พระเอกของงาน)
-        async function fetchAllData() {
-            await fetchEvents();
-            await fetchTasks();
-            document.getElementById('user-status').innerText = "อัปเดตล่าสุด: " + new Date().toLocaleTimeString('th-TH');
-        }
+        async function fetchAllData() { await fetchEvents(); await fetchTasks(); }
 
         async function fetchEvents() {
             try {
-                // ดึงข้อมูลทั้งวัน (00:00 - 23:59)
                 const now = new Date();
                 const startOfDay = new Date(now.setHours(0,0,0,0)).toISOString();
                 const endOfDay = new Date(now.setHours(23,59,59,999)).toISOString();
-
                 const response = await gapi.client.calendar.events.list({
-                    'calendarId': 'primary', 
-                    'timeMin': startOfDay, 
-                    'timeMax': endOfDay,
-                    'showDeleted': false, 
-                    'singleEvents': true, 
-                    'orderBy': 'startTime'
+                    'calendarId': 'primary', 'timeMin': startOfDay, 'timeMax': endOfDay,
+                    'showDeleted': false, 'singleEvents': true, 'orderBy': 'startTime'
                 });
                 myEvents = response.result.items || [];
-                renderUI(); // วาดหน้าจอใหม่
-            } catch (err) {
-                console.error("Calendar Error:", err);
-                if(err.status === 401) handleSignout(); // ถ้า Token หมดอายุให้เด้งออก
-            }
+                renderUI();
+            } catch (err) { if(err.status===401) handleSignout(); }
         }
 
         async function fetchTasks() {
             try {
                 const response = await gapi.client.tasks.tasks.list({
-                    'tasklist': '@default', 
-                    'showCompleted': false, 
-                    'maxResults': 30
+                    'tasklist': '@default', 'showCompleted': false, 'maxResults': 30
                 });
                 myTasks = response.result.items || [];
-                renderUI(); // วาดหน้าจอใหม่
-            } catch (err) {
-                console.error("Tasks Error:", err);
-            }
+                renderUI();
+            } catch (err) { console.error(err); }
         }
 
-        // 7. บันทึกกิจกรรมใหม่
         async function saveEvent() {
             const summary = document.getElementById('eventTitle').value;
             const startVal = document.getElementById('eventStart').value;
             const endVal = document.getElementById('eventEnd').value;
-
             if(!summary || !startVal || !endVal) return alert("กรุณากรอกข้อมูลให้ครบ");
 
             const event = {
@@ -426,138 +355,105 @@
                 'start': { 'dateTime': new Date(startVal).toISOString() },
                 'end': { 'dateTime': new Date(endVal).toISOString() }
             };
-
             try {
                 await gapi.client.calendar.events.insert({ 'calendarId': 'primary', 'resource': event });
-                closeModal(); 
-                alert("บันทึกเรียบร้อย!"); 
-                fetchAllData(); // ดึงข้อมูลใหม่ทันที
-            } catch (err) { 
-                alert("เกิดข้อผิดพลาด: " + err.message); 
-            }
+                closeModal(); alert("บันทึกแล้ว!"); fetchAllData();
+            } catch (err) { alert("Error: " + err.message); }
         }
 
-        // 8. แสดงผลหน้าจอ (UI Rendering)
-        function renderUI() {
-            renderEventList();
-            renderTaskList();
-            drawClock();
-        }
+        function renderUI() { renderEventList(); renderTaskList(); drawClock(); }
 
         function renderEventList() {
             const list = document.getElementById('eventList');
             list.innerHTML = '';
-            
-            if (myEvents.length === 0) {
-                list.innerHTML = '<div style="text-align:center;color:#ccc;margin-top:20px;">วันนี้ไม่มีกิจกรรม</div>';
-                return;
-            }
-            
+            if (myEvents.length === 0) { list.innerHTML = '<div style="text-align:center;color:#ccc;margin-top:20px;">วันนี้ไม่มีกิจกรรม</div>'; return; }
             myEvents.forEach((ev, idx) => {
-                const isAllDay = !ev.start.dateTime; // เช็คว่าเป็นทั้งวันไหม
+                const isAllDay = !ev.start.dateTime;
                 const start = isAllDay ? new Date(ev.start.date) : new Date(ev.start.dateTime);
                 const end = isAllDay ? new Date(ev.end.date) : new Date(ev.end.dateTime);
-                const timeStr = isAllDay ? "ตลอดวัน" : 
-                    `${start.toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'})} - ${end.toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'})}`;
-                
+                const timeStr = isAllDay ? "ตลอดวัน" : `${start.toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'})} - ${end.toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'})}`;
                 const color = ev.colorId ? '#4e54c8' : `hsl(${idx*60}, 60%, 60%)`;
-
-                list.innerHTML += `
-                    <div class="task-item" style="border-left-color:${color}">
-                        <div class="task-title" style="font-weight:600;">${ev.summary}</div>
-                        <div class="task-time" style="color:${color}"><i class="far fa-clock"></i> ${timeStr}</div>
-                    </div>`;
+                list.innerHTML += `<div class="task-item" style="border-left-color:${color}"><div class="task-title" style="font-weight:600;">${ev.summary}</div><div class="task-time" style="color:${color}"><i class="far fa-clock"></i> ${timeStr}</div></div>`;
             });
         }
 
         function renderTaskList() {
             const list = document.getElementById('taskList');
             list.innerHTML = '';
-
-            if (myTasks.length === 0) {
-                list.innerHTML = '<div style="text-align:center;color:#ccc;margin-top:20px;">ไม่มี Tasks ค้าง</div>';
-                return;
-            }
-
+            if (myTasks.length === 0) { list.innerHTML = '<div style="text-align:center;color:#ccc;margin-top:20px;">ไม่มี Tasks ค้าง</div>'; return; }
             myTasks.forEach(task => {
-                let dueHtml = '';
-                if(task.due) {
-                    const d = new Date(task.due);
-                    dueHtml = `<div class="todo-due"><i class="fas fa-calendar-day"></i> ${d.toLocaleDateString('th-TH')}</div>`;
-                }
-
-                list.innerHTML += `
-                    <div class="todo-item">
-                        <div class="todo-check"><i class="fas fa-check"></i></div>
-                        <div class="todo-content">
-                            <div class="todo-title">${task.title}</div>
-                            ${dueHtml}
-                        </div>
-                    </div>`;
+                let dueHtml = task.due ? `<div class="todo-due"><i class="fas fa-calendar-day"></i> ${new Date(task.due).toLocaleDateString('th-TH')}</div>` : '';
+                list.innerHTML += `<div class="todo-item"><div class="todo-check"><i class="fas fa-check"></i></div><div class="todo-content"><div class="todo-title">${task.title}</div>${dueHtml}</div></div>`;
             });
         }
 
-        // 9. วาดนาฬิกา (Canvas)
+        // ==========================================
+        // 🕒 ส่วนวาดนาฬิกา (อัปเดตใหม่: มีตัวเลข)
+        // ==========================================
         const ctx = document.getElementById('clock').getContext('2d');
-        const cx = 500, cy = 500, r = 450; // High Res
+        const cx = 500, cy = 500, r = 450;
 
         function drawClock() {
             const now = new Date();
-            // อัปเดตตัวเลขตรงกลาง
             document.getElementById('currentTime').innerText = now.toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'});
             document.getElementById('currentDate').innerText = now.toLocaleDateString('th-TH', {weekday:'long', day:'numeric', month:'long'});
 
             ctx.clearRect(0, 0, 1000, 1000);
             
-            // วาดพื้นหลัง
+            // 1. พื้นหลัง
             ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2*Math.PI); ctx.fillStyle='white'; ctx.fill();
             ctx.strokeStyle='#eee'; ctx.lineWidth=3; ctx.stroke();
 
-            // วาด Events (เฉพาะที่มีเวลา ไม่เอา All-day)
+            // 2. วาด Events
             myEvents.forEach((ev, idx) => {
-                if(!ev.start.dateTime) return;
-                
+                if(!ev.start.dateTime) return; // ไม่วาด All-day
                 const start = new Date(ev.start.dateTime);
                 const end = new Date(ev.end.dateTime);
                 const color = ev.colorId ? '#4e54c8' : `hsl(${idx*60}, 60%, 60%)`;
 
-                // แปลงเวลาเป็นมุม (12 ชม. = 360 องศา)
                 const startMin = (start.getHours() % 12) * 60 + start.getMinutes();
                 const endMin = (end.getHours() % 12) * 60 + end.getMinutes();
-                
                 let sAng = (startMin / 720) * 2 * Math.PI;
                 let eAng = (endMin / 720) * 2 * Math.PI;
-                
-                if (eAng < sAng) eAng += 2 * Math.PI; // กรณีข้ามรอบ
+                if (eAng < sAng) eAng += 2 * Math.PI;
 
                 ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, sAng, eAng);
                 ctx.fillStyle=color; ctx.globalAlpha=0.6; ctx.fill(); ctx.globalAlpha=1.0;
             });
 
-            // วาดเส้นขีดชั่วโมง
-            for(let i=0; i<12; i++){
-                const a = (i/12)*2*Math.PI;
-                ctx.beginPath(); ctx.moveTo(cx+Math.cos(a)*(r-25), cy+Math.sin(a)*(r-25));
-                ctx.lineTo(cx+Math.cos(a)*r, cy+Math.sin(a)*r);
+            // 3. วาดเส้นขีดและตัวเลข
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.font = "bold 40px Prompt";
+            ctx.fillStyle = "#aaa";
+
+            for(let i=1; i<=12; i++){
+                const angle = (i/12) * 2 * Math.PI;
+                // ขีด
+                ctx.beginPath(); 
+                ctx.moveTo(cx+Math.cos(angle)*(r-20), cy+Math.sin(angle)*(r-20));
+                ctx.lineTo(cx+Math.cos(angle)*r, cy+Math.sin(angle)*r);
                 ctx.strokeStyle='#ddd'; ctx.lineWidth=5; ctx.stroke();
+
+                // ตัวเลข (หมุนกลับให้ตั้งตรง)
+                const numX = cx + Math.cos(angle - Math.PI/2) * (r - 60);
+                const numY = cy + Math.sin(angle - Math.PI/2) * (r - 60);
+                ctx.fillText(i.toString(), numX, numY);
             }
 
-            // เข็มปัจจุบัน
+            // 4. เข็มปัจจุบัน
             const curMin = (now.getHours() % 12) * 60 + now.getMinutes();
             const curAng = (curMin / 720) * 2 * Math.PI;
             
             ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, curAng, curAng);
             ctx.strokeStyle='#ff4757'; ctx.lineWidth=10; ctx.stroke();
-            
             ctx.beginPath(); ctx.arc(cx+Math.cos(curAng)*r, cy+Math.sin(curAng)*r, 18, 0, 2*Math.PI);
             ctx.fillStyle='#ff4757'; ctx.fill();
         }
 
-        // Tab Switching
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.list-section').forEach(l => l.classList.remove('active'));
-            
             if(tab === 'events') {
                 document.querySelectorAll('.tab-btn')[0].classList.add('active');
                 document.getElementById('eventListSection').classList.add('active');
@@ -566,8 +462,6 @@
                 document.getElementById('taskListSection').classList.add('active');
             }
         }
-
-        // Modal Control
         function openModal() {
             const now = new Date();
             now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
@@ -578,9 +472,8 @@
         }
         function closeModal() { document.getElementById('eventModal').style.display = 'none'; }
 
-        // Loop
         setInterval(drawClock, 1000);
-        setInterval(fetchAllData, 300000); // 5 นาที
+        setInterval(fetchAllData, 300000);
 
     </script>
 </body>
