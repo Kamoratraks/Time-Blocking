@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Pro Planner</title>
+    <title>Sectograph & Tasks Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -11,7 +11,7 @@
         :root {
             --primary: #4e54c8;
             --secondary: #8f94fb;
-            --task-color: #ff6b6b;
+            --task-color: #ff6b6b; /* สีของ Tasks */
             --bg: #f4f7fc;
             --card-bg: #ffffff;
             --text-main: #333;
@@ -33,8 +33,8 @@
         /* --- Layout --- */
         .app-container {
             width: 90%;
-            max-width: 1100px;
-            height: 85vh;
+            max-width: 1200px;
+            height: 90vh;
             background: var(--card-bg);
             border-radius: 30px;
             box-shadow: var(--shadow);
@@ -45,10 +45,10 @@
 
         /* --- Sidebar (Left) --- */
         .sidebar {
-            width: 380px;
+            width: 400px;
             background: #fafbff;
             border-right: 1px solid #eee;
-            padding: 30px;
+            padding: 25px;
             display: flex;
             flex-direction: column;
         }
@@ -63,7 +63,7 @@
             background: #eef2f7;
             padding: 5px;
             border-radius: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         .tab-btn {
             flex: 1;
@@ -84,50 +84,57 @@
             font-weight: 600;
         }
 
-        /* --- Lists --- */
-        .list-container {
+        /* --- Lists Content --- */
+        .content-area {
             flex-grow: 1;
             overflow-y: auto;
             padding-right: 5px;
+            position: relative;
+        }
+
+        .list-section {
             display: none;
             animation: fadeIn 0.3s ease;
         }
-        .list-container.active { display: block; }
-
+        .list-section.active { display: block; }
+        
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- Items --- */
+        /* --- Items Styles --- */
+        /* Calendar Event */
         .task-item {
             background: white;
-            padding: 15px;
-            border-radius: 15px;
+            padding: 12px 15px;
+            border-radius: 12px;
             margin-bottom: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
             border-left: 5px solid #ddd;
             transition: 0.2s;
-            cursor: default;
         }
-        .task-time { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
-        .task-title { font-size: 1rem; margin-top: 3px; font-weight: 500; }
+        .task-time { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; display: flex; align-items: center; gap: 5px;}
+        .task-title { font-size: 1rem; margin-top: 3px; font-weight: 500; color: var(--text-main); }
 
+        /* Google Task */
         .todo-item {
             background: white;
-            padding: 15px;
-            border-radius: 15px;
+            padding: 12px 15px;
+            border-radius: 12px;
             margin-bottom: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
             display: flex; align-items: center; gap: 12px;
             border-left: 5px solid var(--task-color);
+            transition: 0.2s;
         }
         .todo-check {
-            width: 22px; height: 22px; border: 2px solid #ddd; border-radius: 50%;
+            width: 20px; height: 20px; border: 2px solid #ddd; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 12px;
+            color: white; font-size: 10px; cursor: pointer; flex-shrink: 0;
         }
+        .todo-check:hover { border-color: var(--task-color); }
         .todo-content { flex-grow: 1; }
         .todo-title { font-size: 0.95rem; font-weight: 500; color: #444; }
-        .todo-due { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
-
+        .todo-due { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; margin-top: 2px; }
+        
         /* --- Main Content (Clock) --- */
         .main-content {
             flex-grow: 1;
@@ -138,7 +145,7 @@
             position: relative;
             background: radial-gradient(circle at center, #ffffff 0%, #f8f9fa 100%);
         }
-        .clock-wrapper { position: relative; width: 450px; height: 450px; }
+        .clock-wrapper { position: relative; width: 500px; height: 500px; }
         canvas { width: 100%; height: 100%; transform: rotate(-90deg); }
         .center-info {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -155,32 +162,36 @@
             display: flex; align-items: center; justify-content: center; gap: 10px;
             width: 100%; margin-bottom: 20px; transition: 0.3s;
         }
-        .btn-logout { background: #ff6b6b; margin-top: 20px; }
+        .btn-logout { background: #ff6b6b; margin-top: 10px; }
+        
         .fab {
             position: absolute; bottom: 30px; right: 30px;
             width: 60px; height: 60px; background: var(--primary); color: white;
             border-radius: 50%; border: none; font-size: 24px; cursor: pointer;
-            box-shadow: 0 10px 20px rgba(78, 84, 200, 0.4); display: none;
+            box-shadow: 0 10px 20px rgba(78, 84, 200, 0.4); display: none; z-index: 100;
+            transition: 0.3s;
         }
+        .fab:hover { transform: scale(1.1) rotate(90deg); }
 
         /* --- Modal --- */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;
+            background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 2000;
         }
         .modal-content {
             background: white; padding: 30px; border-radius: 20px; width: 350px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.2);
         }
         .form-control { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; box-sizing: border-box; font-family: 'Prompt'; }
-        .btn-save { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; }
-        .close-modal { float: right; cursor: pointer; color: #999; }
+        .btn-save { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-size: 1rem;}
+        .close-modal { float: right; cursor: pointer; color: #999; font-size: 1.2rem;}
 
         @media (max-width: 768px) {
-            .app-container { flex-direction: column-reverse; height: 95vh; }
-            .sidebar { width: 100%; height: auto; min-height: 400px; padding: 20px; box-sizing: border-box;}
-            .main-content { min-height: 400px; }
-            .clock-wrapper { width: 300px; height: 300px; }
+            .app-container { flex-direction: column-reverse; height: 100vh; border-radius: 0; width: 100%; }
+            .sidebar { width: 100%; height: 50%; padding: 20px; box-sizing: border-box; border-right: none; border-top: 1px solid #eee; }
+            .main-content { height: 50%; }
+            .clock-wrapper { width: 280px; height: 280px; }
+            .time-big { font-size: 2.5rem; }
         }
     </style>
 </head>
@@ -189,12 +200,12 @@
     <div class="app-container">
         <div class="sidebar">
             <div class="header">
-                <h1>My Planner</h1>
-                <p id="user-status">กำลังโหลด...</p>
+                <h1><i class="fas fa-clock"></i> Planner Pro</h1>
+                <p id="user-status">กำลังโหลดระบบ...</p>
             </div>
 
             <button id="authBtn" class="btn-login" onclick="handleAuth()">
-                <i class="fab fa-google"></i> เชื่อมต่อ Google
+                <i class="fab fa-google"></i> เข้าสู่ระบบด้วย Google
             </button>
 
             <div class="tabs" id="tabContainer" style="display:none;">
@@ -202,21 +213,28 @@
                 <button class="tab-btn" onclick="switchTab('tasks')">Tasks</button>
             </div>
 
-            <div class="list-container active" id="eventList">
-                <div style="text-align:center; color:#ccc; margin-top:50px;">ไม่มีข้อมูล</div>
-            </div>
-            <div class="list-container" id="taskList">
-                <div style="text-align:center; color:#ccc; margin-top:50px;">ไม่มี Tasks</div>
+            <div class="content-area">
+                <div class="list-section active" id="eventListSection">
+                    <div id="eventList">
+                        <div style="text-align:center; color:#ccc; margin-top:40px;">ไม่มีข้อมูล</div>
+                    </div>
+                </div>
+
+                <div class="list-section" id="taskListSection">
+                    <div id="taskList">
+                        <div style="text-align:center; color:#ccc; margin-top:40px;">ไม่มี Tasks</div>
+                    </div>
+                </div>
             </div>
 
             <button id="logoutBtn" class="btn-login btn-logout" onclick="handleSignout()" style="display:none;">
-                ออกจากระบบ
+                <i class="fas fa-sign-out-alt"></i> ออกจากระบบ
             </button>
         </div>
 
         <div class="main-content">
             <div class="clock-wrapper">
-                <canvas id="clock" width="900" height="900"></canvas>
+                <canvas id="clock" width="1000" height="1000"></canvas>
                 <div class="center-info">
                     <h1 class="time-big" id="currentTime">--:--</h1>
                     <div class="date-small" id="currentDate">...</div>
@@ -229,11 +247,14 @@
     <div class="modal" id="eventModal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal()">&times;</span>
-            <h2 style="margin-top:0;">เพิ่มกิจกรรมใหม่</h2>
-            <input type="text" id="eventTitle" class="form-control" placeholder="ชื่อกิจกรรม">
-            <label>เริ่ม:</label> <input type="datetime-local" id="eventStart" class="form-control">
-            <label>จบ:</label> <input type="datetime-local" id="eventEnd" class="form-control">
-            <button class="btn-save" onclick="saveEvent()">บันทึกกิจกรรม</button>
+            <h2 style="margin-top:0;">เพิ่มกิจกรรม</h2>
+            <label>ชื่อกิจกรรม:</label>
+            <input type="text" id="eventTitle" class="form-control" placeholder="เช่น ประชุม, ออกกำลังกาย">
+            <label>เวลาเริ่ม:</label> 
+            <input type="datetime-local" id="eventStart" class="form-control">
+            <label>เวลาจบ:</label> 
+            <input type="datetime-local" id="eventEnd" class="form-control">
+            <button class="btn-save" onclick="saveEvent()">บันทึก</button>
         </div>
     </div>
 
@@ -242,36 +263,41 @@
 
     <script>
         // ==========================================
-        // 🔐 ใส่ KEY ของคุณตรงนี้ (ห้ามลืม!)
+        // 🔐 แก้ไข KEY ของคุณตรงนี้
         // ==========================================
         const CLIENT_ID = '403729551714-j8jksjp2uqoauhc7bi2ibh02bpnvtvbh.apps.googleusercontent.com'; 
         const API_KEY = 'AIzaSyC9B9m47khLErMibHa0Fjc29B2xxE8Osoo';
         // ==========================================
 
-        // รายการ API ที่จะโหลด (ต้องเป็น Array แบบนี้เท่านั้น)
+        // 🔗 โหลด Library ให้ครบทั้ง 2 ตัว (Calendar + Tasks)
         const DISCOVERY_DOCS = [
             'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest',
             'https://www.googleapis.com/discovery/v1/apis/tasks/v1/rest'
         ];
         
-        // สิทธิ์ที่ขอ (Calendar + Tasks)
+        // 🔑 ขอสิทธิ์ทั้ง 2 อย่าง
         const SCOPES = 'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/tasks'; 
 
         let tokenClient, gapiInited = false, gisInited = false;
         let myEvents = [], myTasks = [];
 
-        // 1. โหลด GAPI
+        // 1. เริ่มโหลด GAPI
         function gapiLoaded() {
             gapi.load('client', async () => {
-                await gapi.client.init({
-                    apiKey: API_KEY,
-                    discoveryDocs: DISCOVERY_DOCS, // จุดสำคัญที่ต้องแก้ให้ถูก
-                });
-                gapiInited = true; checkAutoLogin();
+                try {
+                    await gapi.client.init({
+                        apiKey: API_KEY,
+                        discoveryDocs: DISCOVERY_DOCS, // สำคัญ: ต้องส่ง Array นี้เข้าไป
+                    });
+                    gapiInited = true; checkAutoLogin();
+                } catch (err) {
+                    console.error("Init Error:", err);
+                    alert("เกิดข้อผิดพลาดในการโหลดระบบ Google: " + JSON.stringify(err));
+                }
             });
         }
 
-        // 2. โหลด GIS
+        // 2. เริ่มโหลด GIS
         function gisLoaded() {
             tokenClient = google.accounts.oauth2.initTokenClient({
                 client_id: CLIENT_ID, scope: SCOPES, callback: '', 
@@ -279,15 +305,15 @@
             gisInited = true; checkAutoLogin();
         }
 
-        // 3. ตรวจสอบ Login
+        // 3. ตรวจสอบสถานะล็อกอิน
         function checkAutoLogin() {
-            const savedToken = localStorage.getItem('g_token');
+            const savedToken = localStorage.getItem('g_token_pro'); // เปลี่ยนชื่อตัวแปรกันชนกับโค้ดเก่า
             if (savedToken && gapiInited && gisInited) {
                 try {
                     gapi.client.setToken(JSON.parse(savedToken));
                     toggleState(true);
                     fetchAllData();
-                } catch(e) { console.log("Token error"); }
+                } catch(e) { console.log("Token expired"); }
             } else {
                 toggleState(false);
             }
@@ -297,7 +323,7 @@
         function handleAuth() {
             tokenClient.callback = async (resp) => {
                 if (resp.error) throw resp;
-                localStorage.setItem('g_token', JSON.stringify(gapi.client.getToken()));
+                localStorage.setItem('g_token_pro', JSON.stringify(gapi.client.getToken()));
                 toggleState(true);
                 await fetchAllData();
             };
@@ -311,13 +337,14 @@
             if (token !== null) {
                 google.accounts.oauth2.revoke(token.access_token);
                 gapi.client.setToken('');
-                localStorage.removeItem('g_token');
+                localStorage.removeItem('g_token_pro');
             }
             toggleState(false);
             myEvents = []; myTasks = [];
-            drawClock(); renderLists();
+            drawClock(); renderUI();
         }
 
+        // ปรับสถานะปุ่ม
         function toggleState(isLoggedIn) {
             const authBtn = document.getElementById('authBtn');
             const logoutBtn = document.getElementById('logoutBtn');
@@ -330,19 +357,19 @@
                 logoutBtn.style.display = 'block';
                 addBtn.style.display = 'block';
                 tabContainer.style.display = 'flex';
-                userStatus.innerText = "กำลังซิงค์...";
+                userStatus.innerText = "กำลังซิงค์ข้อมูล...";
                 userStatus.style.color = "green";
             } else {
                 authBtn.style.display = 'flex';
                 logoutBtn.style.display = 'none';
                 addBtn.style.display = 'none';
                 tabContainer.style.display = 'none';
-                userStatus.innerText = "กรุณาเชื่อมต่อ Google";
+                userStatus.innerText = "กรุณาเชื่อมต่อเพื่อเริ่มใช้งาน";
                 userStatus.style.color = "#888";
             }
         }
 
-        // 6. ดึงข้อมูลทั้งหมด
+        // 6. ดึงข้อมูล (พระเอกของงาน)
         async function fetchAllData() {
             await fetchEvents();
             await fetchTasks();
@@ -351,35 +378,48 @@
 
         async function fetchEvents() {
             try {
+                // ดึงข้อมูลทั้งวัน (00:00 - 23:59)
                 const now = new Date();
                 const startOfDay = new Date(now.setHours(0,0,0,0)).toISOString();
                 const endOfDay = new Date(now.setHours(23,59,59,999)).toISOString();
 
                 const response = await gapi.client.calendar.events.list({
-                    'calendarId': 'primary', 'timeMin': startOfDay, 'timeMax': endOfDay,
-                    'showDeleted': false, 'singleEvents': true, 'orderBy': 'startTime'
+                    'calendarId': 'primary', 
+                    'timeMin': startOfDay, 
+                    'timeMax': endOfDay,
+                    'showDeleted': false, 
+                    'singleEvents': true, 
+                    'orderBy': 'startTime'
                 });
-                myEvents = response.result.items;
-                renderLists(); drawClock();
-            } catch (err) { console.error(err); if(err.status===401) handleSignout(); }
+                myEvents = response.result.items || [];
+                renderUI(); // วาดหน้าจอใหม่
+            } catch (err) {
+                console.error("Calendar Error:", err);
+                if(err.status === 401) handleSignout(); // ถ้า Token หมดอายุให้เด้งออก
+            }
         }
 
         async function fetchTasks() {
             try {
                 const response = await gapi.client.tasks.tasks.list({
-                    'tasklist': '@default', 'showCompleted': false, 'maxResults': 20
+                    'tasklist': '@default', 
+                    'showCompleted': false, 
+                    'maxResults': 30
                 });
                 myTasks = response.result.items || [];
-                renderLists();
-            } catch (err) { console.error(err); }
+                renderUI(); // วาดหน้าจอใหม่
+            } catch (err) {
+                console.error("Tasks Error:", err);
+            }
         }
 
-        // 7. บันทึกงาน
+        // 7. บันทึกกิจกรรมใหม่
         async function saveEvent() {
             const summary = document.getElementById('eventTitle').value;
             const startVal = document.getElementById('eventStart').value;
             const endVal = document.getElementById('eventEnd').value;
-            if(!summary || !startVal || !endVal) return alert("กรอกข้อมูลให้ครบ");
+
+            if(!summary || !startVal || !endVal) return alert("กรุณากรอกข้อมูลให้ครบ");
 
             const event = {
                 'summary': summary,
@@ -389,41 +429,64 @@
 
             try {
                 await gapi.client.calendar.events.insert({ 'calendarId': 'primary', 'resource': event });
-                closeModal(); alert("บันทึกแล้ว!"); fetchAllData();
-            } catch (err) { alert("Error: " + err.message); }
+                closeModal(); 
+                alert("บันทึกเรียบร้อย!"); 
+                fetchAllData(); // ดึงข้อมูลใหม่ทันที
+            } catch (err) { 
+                alert("เกิดข้อผิดพลาด: " + err.message); 
+            }
         }
 
-        // 8. แสดงผล UI
-        function renderLists() {
-            // Render Events
-            const eventList = document.getElementById('eventList');
-            eventList.innerHTML = '';
-            if (myEvents.length === 0) eventList.innerHTML = '<div style="text-align:center;color:#ccc;margin-top:20px;">วันนี้ไม่มีกิจกรรมแบบระบุเวลา</div>';
+        // 8. แสดงผลหน้าจอ (UI Rendering)
+        function renderUI() {
+            renderEventList();
+            renderTaskList();
+            drawClock();
+        }
+
+        function renderEventList() {
+            const list = document.getElementById('eventList');
+            list.innerHTML = '';
+            
+            if (myEvents.length === 0) {
+                list.innerHTML = '<div style="text-align:center;color:#ccc;margin-top:20px;">วันนี้ไม่มีกิจกรรม</div>';
+                return;
+            }
             
             myEvents.forEach((ev, idx) => {
-                if (!ev.start.dateTime) return; // ข้าม All-day
-                const start = new Date(ev.start.dateTime);
-                const end = new Date(ev.end.dateTime);
-                const color = ev.colorId ? '#4e54c8' : `hsl(${idx*50}, 60%, 60%)`;
+                const isAllDay = !ev.start.dateTime; // เช็คว่าเป็นทั้งวันไหม
+                const start = isAllDay ? new Date(ev.start.date) : new Date(ev.start.dateTime);
+                const end = isAllDay ? new Date(ev.end.date) : new Date(ev.end.dateTime);
+                const timeStr = isAllDay ? "ตลอดวัน" : 
+                    `${start.toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'})} - ${end.toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'})}`;
                 
-                eventList.innerHTML += `
+                const color = ev.colorId ? '#4e54c8' : `hsl(${idx*60}, 60%, 60%)`;
+
+                list.innerHTML += `
                     <div class="task-item" style="border-left-color:${color}">
-                        <div class="task-time" style="color:${color}">
-                            ${start.toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'})} - 
-                            ${end.toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'})}
-                        </div>
-                        <div class="task-title">${ev.summary}</div>
+                        <div class="task-title" style="font-weight:600;">${ev.summary}</div>
+                        <div class="task-time" style="color:${color}"><i class="far fa-clock"></i> ${timeStr}</div>
                     </div>`;
             });
+        }
 
-            // Render Tasks
-            const taskList = document.getElementById('taskList');
-            taskList.innerHTML = '';
-            if (myTasks.length === 0) taskList.innerHTML = '<div style="text-align:center;color:#ccc;margin-top:20px;">ไม่มี Tasks ค้าง</div>';
+        function renderTaskList() {
+            const list = document.getElementById('taskList');
+            list.innerHTML = '';
+
+            if (myTasks.length === 0) {
+                list.innerHTML = '<div style="text-align:center;color:#ccc;margin-top:20px;">ไม่มี Tasks ค้าง</div>';
+                return;
+            }
 
             myTasks.forEach(task => {
-                let dueHtml = task.due ? `<div class="todo-due"><i class="far fa-clock"></i> ${new Date(task.due).toLocaleDateString('th-TH')}</div>` : '';
-                taskList.innerHTML += `
+                let dueHtml = '';
+                if(task.due) {
+                    const d = new Date(task.due);
+                    dueHtml = `<div class="todo-due"><i class="fas fa-calendar-day"></i> ${d.toLocaleDateString('th-TH')}</div>`;
+                }
+
+                list.innerHTML += `
                     <div class="todo-item">
                         <div class="todo-check"><i class="fas fa-check"></i></div>
                         <div class="todo-content">
@@ -434,68 +497,77 @@
             });
         }
 
-        // 9. วาดนาฬิกา
+        // 9. วาดนาฬิกา (Canvas)
         const ctx = document.getElementById('clock').getContext('2d');
-        const cx = 450, cy = 450, r = 400;
+        const cx = 500, cy = 500, r = 450; // High Res
 
         function drawClock() {
             const now = new Date();
+            // อัปเดตตัวเลขตรงกลาง
             document.getElementById('currentTime').innerText = now.toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'});
             document.getElementById('currentDate').innerText = now.toLocaleDateString('th-TH', {weekday:'long', day:'numeric', month:'long'});
 
-            ctx.clearRect(0, 0, 900, 900);
+            ctx.clearRect(0, 0, 1000, 1000);
             
-            // Background
+            // วาดพื้นหลัง
             ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2*Math.PI); ctx.fillStyle='white'; ctx.fill();
-            ctx.strokeStyle='#eee'; ctx.lineWidth=2; ctx.stroke();
+            ctx.strokeStyle='#eee'; ctx.lineWidth=3; ctx.stroke();
 
-            // Events
+            // วาด Events (เฉพาะที่มีเวลา ไม่เอา All-day)
             myEvents.forEach((ev, idx) => {
                 if(!ev.start.dateTime) return;
+                
                 const start = new Date(ev.start.dateTime);
                 const end = new Date(ev.end.dateTime);
-                const color = ev.colorId ? '#4e54c8' : `hsl(${idx*50}, 60%, 60%)`;
+                const color = ev.colorId ? '#4e54c8' : `hsl(${idx*60}, 60%, 60%)`;
 
-                const startMin = (start.getHours()%12)*60 + start.getMinutes();
-                const endMin = (end.getHours()%12)*60 + end.getMinutes();
-                let sAng = (startMin/720)*2*Math.PI;
-                let eAng = (endMin/720)*2*Math.PI;
-                if(eAng < sAng) eAng += 2*Math.PI;
+                // แปลงเวลาเป็นมุม (12 ชม. = 360 องศา)
+                const startMin = (start.getHours() % 12) * 60 + start.getMinutes();
+                const endMin = (end.getHours() % 12) * 60 + end.getMinutes();
+                
+                let sAng = (startMin / 720) * 2 * Math.PI;
+                let eAng = (endMin / 720) * 2 * Math.PI;
+                
+                if (eAng < sAng) eAng += 2 * Math.PI; // กรณีข้ามรอบ
 
                 ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, sAng, eAng);
                 ctx.fillStyle=color; ctx.globalAlpha=0.6; ctx.fill(); ctx.globalAlpha=1.0;
             });
 
-            // Hands
-            const curMin = (now.getHours()%12)*60 + now.getMinutes();
-            const curAng = (curMin/720)*2*Math.PI;
-            
-            // วาดเส้นบอกชั่วโมง
+            // วาดเส้นขีดชั่วโมง
             for(let i=0; i<12; i++){
                 const a = (i/12)*2*Math.PI;
-                ctx.beginPath(); ctx.moveTo(cx+Math.cos(a)*(r-20), cy+Math.sin(a)*(r-20));
+                ctx.beginPath(); ctx.moveTo(cx+Math.cos(a)*(r-25), cy+Math.sin(a)*(r-25));
                 ctx.lineTo(cx+Math.cos(a)*r, cy+Math.sin(a)*r);
-                ctx.strokeStyle='#ddd'; ctx.lineWidth=4; ctx.stroke();
+                ctx.strokeStyle='#ddd'; ctx.lineWidth=5; ctx.stroke();
             }
 
+            // เข็มปัจจุบัน
+            const curMin = (now.getHours() % 12) * 60 + now.getMinutes();
+            const curAng = (curMin / 720) * 2 * Math.PI;
+            
             ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, curAng, curAng);
-            ctx.strokeStyle='#ff4757'; ctx.lineWidth=8; ctx.stroke();
-            ctx.beginPath(); ctx.arc(cx+Math.cos(curAng)*r, cy+Math.sin(curAng)*r, 15, 0, 2*Math.PI);
+            ctx.strokeStyle='#ff4757'; ctx.lineWidth=10; ctx.stroke();
+            
+            ctx.beginPath(); ctx.arc(cx+Math.cos(curAng)*r, cy+Math.sin(curAng)*r, 18, 0, 2*Math.PI);
             ctx.fillStyle='#ff4757'; ctx.fill();
         }
 
-        // Helpers
+        // Tab Switching
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.list-container').forEach(l => l.classList.remove('active'));
+            document.querySelectorAll('.list-section').forEach(l => l.classList.remove('active'));
+            
             if(tab === 'events') {
                 document.querySelectorAll('.tab-btn')[0].classList.add('active');
-                document.getElementById('eventList').classList.add('active');
+                document.getElementById('eventListSection').classList.add('active');
             } else {
                 document.querySelectorAll('.tab-btn')[1].classList.add('active');
-                document.getElementById('taskList').classList.add('active');
+                document.getElementById('taskListSection').classList.add('active');
             }
         }
+
+        // Modal Control
         function openModal() {
             const now = new Date();
             now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
@@ -506,8 +578,9 @@
         }
         function closeModal() { document.getElementById('eventModal').style.display = 'none'; }
 
+        // Loop
         setInterval(drawClock, 1000);
-        setInterval(fetchAllData, 300000);
+        setInterval(fetchAllData, 300000); // 5 นาที
 
     </script>
 </body>
